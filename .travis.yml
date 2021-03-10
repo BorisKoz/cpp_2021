@@ -17,6 +17,7 @@ script:
     - cmake ..
     - make clean && make
     - cd ..
-    - ls
+    - cp db.txt /build
+    - cp search.txt / build
     - cd build
-    - ./test.out ../db.txt ../search.txt
+    - ./test.out db.txt search.txt
