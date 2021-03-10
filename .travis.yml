@@ -16,11 +16,7 @@ script:
     - cd build
     - cmake ..
     - make clean && make
-    - cd ..
-    - cp db.txt /build
-    - cp search.txt / build
-    - cd build
-    - ./test.out db.txt search.txt
+    - valgrind --leak-check=full ./test.out ../db.txt ../search.txt
 
 
 after_success:
