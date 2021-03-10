@@ -5,7 +5,6 @@
 
 // open database file. check if not null.
 int open_car_database(FILE** db_ptr, const char* basename) {
-    *db_ptr = malloc(sizeof(FILE*));
     *db_ptr = fopen(basename, "r");
     if (*db_ptr == NULL) {
         printf("Could not open file %s\n", basename);
