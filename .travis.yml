@@ -16,4 +16,7 @@ script:
     - cd build
     - cmake ..
     - make clean && make
-    - valgrind --tool=memcheck --leak-check=full ./test.out ../db.txt ../search.txt
+    - cd ..
+    - ls
+    - cd build
+    - ./test.out ../db.txt ../search.txt
