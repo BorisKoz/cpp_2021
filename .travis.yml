@@ -9,6 +9,7 @@ install:
     - sudo apt-get install valgrind
     - sudo apt-get install clang
     - sudo apt-get install cppcheck
+    - sudo pip install cpplint
 
 script:
     - cd project/
