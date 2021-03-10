@@ -4,7 +4,10 @@
 #define DBNAME "db.txt"
 #define SEARCH_NAME "find.txt"
 
-int main() {
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        return 1;
+    }
     car* input_car = malloc(sizeof(car));
     car* comparison_car = malloc(sizeof(car));
     car* found_car = malloc(sizeof(car));
@@ -19,8 +22,8 @@ int main() {
     car_nullptr(found_car);
     FILE* db = NULL, * search = NULL;
     int return_code = 0;
-    return_code = open_car_database(&db, DBNAME)
-            + open_car_database(&search, SEARCH_NAME);
+    return_code = open_car_database(&db, argv[1])
+            + open_car_database(&search, argv[2]);
     if (return_code != 0) {
         fclose(db);
         fclose(search);
