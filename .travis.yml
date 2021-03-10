@@ -9,8 +9,6 @@ install:
     - sudo apt-get install valgrind
     - sudo apt-get install clang
     - sudo apt-get install cppcheck
-    - apt remove cmake
-    - pip install cmake --upgrade
 
 script:
     - cd project/
