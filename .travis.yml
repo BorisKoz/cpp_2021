@@ -17,6 +17,7 @@ script:
     - cmake ..
     - make clean && make
     - cppcheck ../include/*.h ../src/*.c
+    - cpplint ../include/*.h ../src/*.c
     - valgrind --leak-check=full ./test.out ../db.txt ../find.txt
     - ./tests/tests_tests 
 
