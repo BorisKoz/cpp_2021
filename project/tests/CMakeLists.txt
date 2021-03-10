@@ -1,6 +1,9 @@
 
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
+set(CMAKE_C_FLAGS "-pedantic -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "-pedantic -fprofile-arcs -ftest-coverage")
+
 file(GLOB sources "${PROJECT_SOURCE_DIR}/src/*.c")
 list(REMOVE_ITEM sources "${PROJECT_SOURCE_DIR}/src/main.c")
 
