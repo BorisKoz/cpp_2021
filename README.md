@@ -1,7 +1,7 @@
 # cpp_2021
 
 
-[![Build Status](https://travis-ci.com/BorisKoz/cpp_2021.svg?branch=master)](https://travis-ci.com/BorisKoz/cpp_2021)
+[![Build Status](https://travis-ci.com/BorisKoz/cpp_2021.svg?branch=HW-1)](https://travis-ci.com/BorisKoz/cpp_2021)
 
 
 
