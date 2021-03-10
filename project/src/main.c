@@ -29,11 +29,9 @@ int main(int argc, char *argv[]) {
         return ALLOCATE_ERROR;
     }
     float max_equality = 0;
-    if (read_car_instance(search, input_car) == 0) {
-        print_car_instance(input_car);
+    if (read_car_instance(search, input_car) <= 0) {
         while (return_code == 0) {
             return_code = read_car_instance(db, comparison_car);
-            print_car_instance(comparison_car);
             if (return_code <= 0) {
                 if (max_equality < comparison(input_car, comparison_car)) {
                     max_equality = comparison(input_car, comparison_car);

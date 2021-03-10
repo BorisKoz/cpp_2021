@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SIZE_BUF 128
+#define SIZE_BUF 40
 
 typedef struct {
     float engine_power;

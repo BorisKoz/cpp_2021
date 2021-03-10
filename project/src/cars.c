@@ -5,8 +5,9 @@
 
 // open database file. check if not null.
 int open_car_database(FILE** db_ptr, const char* basename) {
+    *db_ptr = malloc(sizeof(FILE*));
     *db_ptr = fopen(basename, "r");
-    if (db_ptr == NULL) {
+    if (*db_ptr == NULL) {
         printf("Could not open file %s\n", basename);
         return NULLPTR_EX;
     }
@@ -27,12 +28,9 @@ int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
 
 // read next car instance from base.
 int read_car_instance(FILE* db_ptr, car *car_read) {
-    if (feof(db_ptr)) {
-        return EOF_REACHED;
-    }
     if (db_ptr != NULL && car_read != NULL) {
         char read_buffer[5][SIZE_BUF];
-        if (fscanf(db_ptr, "%127s%127s%127s%127s%127s", read_buffer[0],
+        if (fscanf(db_ptr, "%35s%35s%35s%35s%35s", read_buffer[0],
                    read_buffer[1], read_buffer[2], read_buffer[3],
                    read_buffer[4]) !=5 ) {
             return INCORRECT_ENTRY;
@@ -47,6 +45,9 @@ int read_car_instance(FILE* db_ptr, car *car_read) {
         if (allocate_string(&car_read->model_name, read_buffer[3]) != 0
             || allocate_string(&car_read->body_type, read_buffer[4]) != 0)
             return ALLOCATE_ERROR;
+        if (feof(db_ptr)) {
+            return EOF_REACHED;
+        }
         return 0;
     }
     return NULLPTR_EX;
