@@ -22,17 +22,18 @@ int main(int argc, char *argv[]) {
     car_nullptr(found_car);
     FILE* db = NULL, * search = NULL;
     int return_code = 0;
-    return_code = open_car_database(&db, argv[1])
-            + open_car_database(&search, argv[2]);
-    if (return_code != 0) {
-        fclose(db);
-        fclose(search);
-        return return_code;
+    if (open_car_database(&db, argv[1]) != 0) {
+        return ALLOCATE_ERROR;
+    }
+    if (open_car_database(&search, argv[2]) != 0) {
+        return ALLOCATE_ERROR;
     }
     float max_equality = 0;
     if (read_car_instance(search, input_car) == 0) {
+        print_car_instance(input_car);
         while (return_code == 0) {
             return_code = read_car_instance(db, comparison_car);
+            print_car_instance(comparison_car);
             if (return_code <= 0) {
                 if (max_equality < comparison(input_car, comparison_car)) {
                     max_equality = comparison(input_car, comparison_car);
