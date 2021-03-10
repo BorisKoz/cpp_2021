@@ -16,7 +16,8 @@ script:
     - cd build
     - cmake ..
     - make clean && make
-    - cd ..
-    - ls
-    - cd build
-    - ./test.out ../db.txt ../search.txt
+    - valgrind --leak-check=full ./test.out ../db.txt ../search.txt
+
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
