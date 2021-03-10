@@ -16,8 +16,11 @@ script:
     - cd build
     - cmake ..
     - make clean && make
+    - cppcheck ../include/*.h ../src/*.c
     - valgrind --leak-check=full ./test.out ../db.txt ../find.txt
+    - ./tests/tests_tests 
+
 
 
 after_success:
-    - codecov -t d142d667-d5d9-4692-b75e-f29f29622e4d -X gcov
+    - bash <(curl -s https://codecov.io/bash)
