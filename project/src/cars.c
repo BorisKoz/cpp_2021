@@ -123,11 +123,14 @@ float comparison(const car* car_1, const car* car_2) {
 
 // free car strings
 int free_car(car* car_1) {
-    if (car_1->body_type != NULL )
-        free(car_1->body_type);
-    if (car_1->model_name != NULL )
-        free(car_1->model_name);
-    return 0;
+    if (car_1 != NULL) {
+        if (car_1->body_type != NULL)
+            free(car_1->body_type);
+        if (car_1->model_name != NULL)
+            free(car_1->model_name);
+        return 0;
+    }
+    return NULLPTR_EX;
 }
 
 // copy existing car instance
@@ -143,6 +146,7 @@ int copy_car(car* dest, car* src) {
     allocate_string(&dest->body_type, src->body_type);
     return 0;
 }
+
 int car_nullptr(car* car_1) {
     car_1->body_type = NULL;
     car_1->model_name = NULL;
