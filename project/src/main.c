@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
         // write to file for search
         char read_buffer[SIZE_BUF];
         for (int i = 0; i < 5; i++) {
-            if (scanf("%35s", read_buffer) != 1 ) {
+            if (scanf("%35s", read_buffer) != 1) {
                return_code = INCORRECT_ENTRY;
             } else {
                 fputs(read_buffer, search);

@@ -22,7 +22,7 @@ int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
     }
     if (*string_in_car != NULL)
         if (strlen(*string_in_car) != 0)
-            free (*string_in_car);
+            free(*string_in_car);
     *string_in_car = (char*)malloc((strlen(buffer_value) + 1) * sizeof(char)); //NOLINT
     if (*string_in_car != NULL) {
         // was a check on <0 here, but is eliminated due to constraints:
@@ -161,6 +161,7 @@ int copy_car(car* dest, car* src) {
     allocate_string(&dest->body_type, src->body_type);
     return 0;
 }
+
 
 int car_nullptr(car* car_1) {
     car_1->body_type = NULL;

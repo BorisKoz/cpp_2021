@@ -32,11 +32,12 @@ TEST(allocate_string, ok) {
     char **allocated_string = nullptr;
     EXPECT_EQ(allocate_string(allocated_string, buffer), NULLPTR_EX);
     allocated_string = (char**) malloc(sizeof(char*)); // NOLINT
-    *allocated_string= nullptr;
+    *allocated_string = nullptr;
     EXPECT_EQ(allocate_string(allocated_string, buffer), 0);
     free(*allocated_string);
     char buffer2[SIZE_BUF] = "";
     EXPECT_EQ(allocate_string(allocated_string, buffer2), INCORRECT_ENTRY);
+    free(*allocated_string);
 }
 
 TEST(open_car_database, ok) {
@@ -73,13 +74,13 @@ TEST(copy_car, not_ok) {
 TEST(copy_car, ok) {
     car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"}; // NOLINT
     car newcar = {200, 0, 2, nullptr, nullptr};
-    newcar.body_type = (char*)malloc(sizeof(char) * 10); // NOLINT
     EXPECT_EQ(copy_car(&newcar, &car_a), 0);
     ASSERT_EQ(newcar.fuel_consumption, car_a.fuel_consumption);
     ASSERT_EQ(newcar.fuel_consumption, car_a.fuel_consumption);
     ASSERT_EQ(newcar.fuel_consumption, car_a.fuel_consumption);
     ASSERT_STREQ(newcar.body_type, car_a.body_type);
     ASSERT_STREQ(newcar.model_name, car_a.model_name);
+    free_car(&newcar);
 }
 
 TEST(comparison, ok) {
@@ -108,6 +109,7 @@ TEST(read_car_instance, ok) {
     open_car_database(&file, "../../db.txt");
     ASSERT_EQ(read_car_instance(file, &car_1), 0);
     fclose(file);
+    free_car(&car_1);
 }
 
 TEST(read_car_instance, not_ok_1) {
@@ -117,6 +119,7 @@ TEST(read_car_instance, not_ok_1) {
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
     free_car(&car_1);
     fclose(file);
+    free_car(&car_1);
 }
 
 TEST(read_car_instance, not_ok_2) {
