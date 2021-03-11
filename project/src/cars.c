@@ -23,7 +23,7 @@ int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
     if (*string_in_car)
         free(*string_in_car);
     *string_in_car = (char*)malloc((strlen(buffer_value) + 1) * sizeof(char));
-    if (*string_in_car != NULL) {
+    if (*string_in_car) {
         // was a check on <0 here, but is eliminated due to constraints:
         // SIZE_BUF always fits, and char* has no way of encoding error
         snprintf(*string_in_car, SIZE_BUF, "%s", buffer_value);

@@ -9,6 +9,7 @@ int main(int argc, char *argv[]) {
     }
     car* input_car = (car*)malloc(sizeof(car));
     car* found_car = (car*)malloc(sizeof(car));
+
     FILE* db = NULL, * search = NULL;
     int return_code = 0;
     while (true) {
@@ -18,7 +19,8 @@ int main(int argc, char *argv[]) {
         }
         if (return_code !=0)
             break;
-
+        car_nullptr(input_car);
+        car_nullptr(found_car);
         // open fault check
         if (open_car_database(&db, argv[1]) != 0 ||
             open_car_database(&search, argv[2]) != 0) {
@@ -57,13 +59,13 @@ int main(int argc, char *argv[]) {
     error_out(return_code);
     free_car(found_car);
     free_car(input_car);
-    if (input_car != NULL)
+    if (input_car )
         free(input_car);
-    if (found_car != NULL)
+    if (found_car)
         free(found_car);
-    if (db != NULL)
+    if (db)
         fclose(db);
-    if (search != NULL)
+    if (search )
         fclose(search);
     return return_code;
 }
