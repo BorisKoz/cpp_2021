@@ -20,7 +20,7 @@ script:
     - make clean && make
     - cppcheck --inconclusive --enable=all --language=c ../include/*.h ../src/*.c
     - cpplint ../include/*.h ../src/*.c ../tests/*.cpp
-zsh:1: command not found: q
+    - valgrind --leak-check=full --track-origin=yes ./test.out ../db.txt ../find.txt < ../find.txt
     - cd tests
     - valgrind --leak-check=full --track-origins=yes ./cars_tests 
 
