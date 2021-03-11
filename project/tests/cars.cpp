@@ -37,7 +37,7 @@ TEST(allocate_string, ok) {
     free(*allocated_string);
     char buffer2[SIZE_BUF] = "";
     EXPECT_EQ(allocate_string(allocated_string, buffer2), INCORRECT_ENTRY);
-    free(*allocated_string);
+    free (allocated_string);
 }
 
 TEST(open_car_database, ok) {
@@ -50,8 +50,9 @@ TEST(open_car_database, ok) {
 TEST(free_car, ok) {
     car* pointer = NULL;
     car car_a = {100, 100, 1, NULL, NULL};
-    car_a.model_name = (char*)malloc(sizeof(char) * 10); // NOLINT
-    car_a.body_type = (char*)malloc(sizeof(char) * 10); // NOLINT
+    char buffer[SIZE_BUF] = "test_string";
+    allocate_string(&car_a.body_type, buffer);
+    allocate_string(&car_a.model_name, buffer);
     EXPECT_EQ(free_car(pointer), NULLPTR_EX);
     EXPECT_EQ(free_car(&car_a), 0);
 }
