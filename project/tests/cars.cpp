@@ -97,7 +97,7 @@ TEST(print_car_instance, ok) {
 
 TEST(read_car_instance, ok) {
     FILE* file = nullptr;
-    car car_1 = {100,100,0 ,NULL, NULL};
+    car car_1 = {100, 100, 0, NULL, NULL};
     ASSERT_EQ(read_car_instance(file, &car_1), NULLPTR_EX);
     open_car_database(&file, "../../find.txt");
     ASSERT_EQ(read_car_instance(file, &car_1), EOF_REACHED);
@@ -109,7 +109,7 @@ TEST(read_car_instance, ok) {
 
 TEST(read_car_instance, not_ok_1) {
     FILE* file = nullptr;
-    car car_1 = {100,100,0 ,NULL, NULL};
+    car car_1 = {100, 100, 0, NULL, NULL};
     open_car_database(&file, "../../tests/1.txt");
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
     fclose(file);
@@ -117,7 +117,7 @@ TEST(read_car_instance, not_ok_1) {
 
 TEST(read_car_instance, not_ok_2) {
     FILE* file = nullptr;
-    car car_1 = {100,100,0 ,NULL, NULL};
+    car car_1 = {100, 100, 0, NULL, NULL};
     open_car_database(&file, "../../tests/2.txt");
     read_car_instance(file, &car_1);
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
@@ -130,7 +130,7 @@ TEST(read_car_instance, not_ok_2) {
 
 TEST(read_car_instance, not_ok_3) {
     FILE* file = nullptr;
-    car car_1 = {100,100,0 ,NULL, NULL};
+    car car_1 = {100, 100, 0, NULL, NULL};
     open_car_database(&file, "../../tests/3.txt");
     read_car_instance(file, &car_1);
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);

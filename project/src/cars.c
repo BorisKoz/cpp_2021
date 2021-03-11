@@ -17,7 +17,7 @@ int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
     if (string_in_car == NULL) {
         return NULLPTR_EX;
     }
-    if (buffer_value[0] == '\0'){
+    if (buffer_value[0] == '\0') {
         return INCORRECT_ENTRY;
     }
     *string_in_car = (char*)malloc((strlen(buffer_value) + 1) * sizeof(char)); //NOLINT
@@ -34,7 +34,7 @@ int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
 // read next car instance from base.
 int read_car_instance(FILE* db_ptr, car *car_read) {
     if (db_ptr != NULL && car_read != NULL) {
-        char read_buffer[5][SIZE_BUF]= {"","","","",""};
+        char read_buffer[5][SIZE_BUF]= {"", "", "", "", ""};
         if (fscanf(db_ptr, "%35s%35s%35s%35s%35s", read_buffer[0],
                    read_buffer[1], read_buffer[2], read_buffer[3],
                    read_buffer[4]) !=5 ) {
