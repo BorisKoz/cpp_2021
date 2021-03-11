@@ -37,7 +37,7 @@ TEST(allocate_string, ok) {
     free(*allocated_string);
     char buffer2[SIZE_BUF] = "";
     EXPECT_EQ(allocate_string(allocated_string, buffer2), INCORRECT_ENTRY);
-    free (allocated_string);
+    free(allocated_string);
 }
 
 TEST(open_car_database, ok) {
