@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
 
         // search itself
         return_code = read_car_instance(search, input_car);
-        if (return_code != 0)
+        if (return_code > 0)
             break;
         return_code = search_in_base(input_car, found_car, db);
         if (return_code <= 0) {
