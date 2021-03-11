@@ -5,7 +5,7 @@
 
 // open database file. check if not null.
 int open_car_database(FILE** db_ptr, const char* basename) {
-    *db_ptr = fopen(basename, "r");
+    *db_ptr = fopen(basename, "r+");
     if (*db_ptr == NULL) {
         printf("Could not open file %s\n", basename);
         return NULLPTR_EX;
@@ -135,9 +135,11 @@ float comparison(const car* car_1, const car* car_2) {
 int free_car(car* car_1) {
     if (car_1 != NULL) {
         if (car_1->body_type != NULL)
-            free(car_1->body_type);
+            if (strlen(car_1->body_type)!=0)
+                free(car_1->body_type);
         if (car_1->model_name != NULL)
-            free(car_1->model_name);
+            if (strlen(car_1->model_name)!=0)
+                free(car_1->model_name);
         return 0;
     }
     return NULLPTR_EX;
@@ -162,3 +164,5 @@ int car_nullptr(car* car_1) {
     car_1->model_name = NULL;
     return 0;
 }
+
+

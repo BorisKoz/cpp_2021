@@ -19,9 +19,9 @@ script:
     - make clean && make
     - cppcheck ../include/*.h ../src/*.c
     - cpplint ../include/*.h ../src/*.c ../tests/*.cpp
-    - valgrind --leak-check=full ./test.out ../db.txt ../find.txt
+    - valgrind --leak-check=full ./test.out ../db.txt ../find.txt < ../find.txt
     - cd tests
-    - ./cars_tests 
+    - valgrind --leak-check=full ./cars_tests 
 
 
 

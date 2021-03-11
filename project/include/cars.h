@@ -40,4 +40,5 @@ float string_distance(const char* a, const char* b);
 float distance_fl(float a, float b);
 
 
+
 #endif // PROJECT_CARS_H // NOLINT
