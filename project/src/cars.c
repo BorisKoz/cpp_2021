@@ -14,15 +14,14 @@ int open_car_database(FILE** db_ptr, const char* basename) {
 }
 
 int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
-    if (string_in_car == NULL) {
+    if (!string_in_car) {
         return NULLPTR_EX;
     }
     if (buffer_value[0] == '\0') {
         return INCORRECT_ENTRY;
     }
-    if (*string_in_car != NULL)
-        if (strlen(*string_in_car) != 0)
-            free(*string_in_car);
+    if (*string_in_car)
+        free(*string_in_car);
     *string_in_car = (char*)malloc((strlen(buffer_value) + 1) * sizeof(char));
     if (*string_in_car != NULL) {
         // was a check on <0 here, but is eliminated due to constraints:
@@ -137,17 +136,13 @@ float comparison(const car* car_1, const car* car_2) {
 // free car strings
 int free_car(car* car_1) {
     if (car_1 != NULL) {
-        if (car_1->body_type != NULL) {
-            if (strlen(car_1->body_type) != 0) {
-                free(car_1->body_type);
-                car_1->body_type = NULL;
-            }
+        if (car_1->body_type) {
+            free(car_1->body_type);
+            car_1->body_type = NULL;
         }
-        if (car_1->model_name != NULL) {
-            if (strlen(car_1->model_name) != 0) {
-                free(car_1->model_name);
-                car_1->model_name = NULL;
-            }
+        if (car_1->model_name) {
+            free(car_1->model_name);
+            car_1->model_name = NULL;
         }
         return 0;
     }
