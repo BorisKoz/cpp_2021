@@ -137,18 +137,18 @@ float comparison(const car* car_1, const car* car_2) {
 // free car strings
 int free_car(car* car_1) {
     if (car_1 != NULL) {
-        if (car_1->body_type != NULL)
+        if (car_1->body_type != NULL) {
             if (strlen(car_1->body_type) != 0) {
                 free(car_1->body_type);
                 car_1->body_type = NULL;
             }
-
-        if (car_1->model_name != NULL)
+        }
+        if (car_1->model_name != NULL) {
             if (strlen(car_1->model_name) != 0) {
                 free(car_1->model_name);
                 car_1->model_name = NULL;
             }
-
+        }
         return 0;
     }
     return NULLPTR_EX;
