@@ -31,7 +31,7 @@ TEST(allocate_string, ok) {
     char buffer[SIZE_BUF] = "test_string";
     char **allocated_string = nullptr;
     EXPECT_EQ(allocate_string(allocated_string, buffer), NULLPTR_EX);
-    allocated_string = (char**) malloc(sizeof(char*)); // NOLINT
+    allocated_string = (char**) malloc(sizeof(char*));
     *allocated_string = nullptr;
     EXPECT_EQ(allocate_string(allocated_string, buffer), 0);
     free(*allocated_string);
@@ -67,13 +67,13 @@ TEST(car_nullptr, ok) {
 }
 
 TEST(copy_car, not_ok) {
-    car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"}; // NOLINT
+    car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"};
     car* newcar = nullptr;
     EXPECT_EQ(copy_car(newcar, &car_a), NULLPTR_EX);
 }
 
 TEST(copy_car, ok) {
-    car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"}; // NOLINT
+    car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"};
     car newcar = {200, 0, 2, nullptr, nullptr};
     EXPECT_EQ(copy_car(&newcar, &car_a), 0);
     ASSERT_EQ(newcar.fuel_consumption, car_a.fuel_consumption);
@@ -85,10 +85,10 @@ TEST(copy_car, ok) {
 }
 
 TEST(comparison, ok) {
-    car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"}; // NOLINT
-    car car_b = {100, 0, 1, (char*)"Toyota", (char*)"Sedan"}; // NOLINT
-    car car_c = {100, 0, 0, (char*)"Toyota", (char*)"Sedan"}; // NOLINT
-    car car_d = {0, 0, 0, (char*)"Renaul", (char*)"Coupe"}; // NOLINT
+    car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"};
+    car car_b = {100, 0, 1, (char*)"Toyota", (char*)"Sedan"};
+    car car_c = {100, 0, 0, (char*)"Toyota", (char*)"Sedan"};
+    car car_d = {0, 0, 0, (char*)"Renaul", (char*)"Coupe"};
     EXPECT_EQ(comparison(&car_a, &car_a), 5);
     EXPECT_EQ(comparison(&car_a, &car_b), 4);
     EXPECT_EQ(comparison(&car_a, &car_c), 3);
@@ -96,7 +96,7 @@ TEST(comparison, ok) {
 }
 
 TEST(print_car_instance, ok) {
-    car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"}; // NOLINT
+    car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"};
     ASSERT_EQ(print_car_instance(&car_a), 0);
 }
 
@@ -104,7 +104,7 @@ TEST(read_car_instance, ok) {
     FILE* file = nullptr;
     car car_1 = {100, 100, 0, NULL, NULL};
     ASSERT_EQ(read_car_instance(file, &car_1), NULLPTR_EX);
-    open_car_database(&file, "../../find.txt");
+    open_car_database(&file, "../../tests/5.txt");
     ASSERT_EQ(read_car_instance(file, &car_1), EOF_REACHED);
     fclose(file);
     open_car_database(&file, "../../db.txt");
@@ -141,6 +141,46 @@ TEST(read_car_instance, not_ok_3) {
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
     fclose(file);
     free_car(&car_1);
+}
+
+TEST(errprint, ok) {
+    ASSERT_EQ(error_out(1), 1);
+    ASSERT_EQ(error_out(2), 2);
+    ASSERT_EQ(error_out(3), 3);
+    ASSERT_EQ(error_out(4), 4);
+    ASSERT_EQ(error_out(-1), 0);
+}
+
+TEST(search_test, ok) {
+    car* input_car = (car*)malloc(sizeof(car));
+    car* found_car = (car*)malloc(sizeof(car));
+    car_nullptr(input_car);
+    car_nullptr(found_car);
+    FILE* input = fopen("../../tests/4.txt", "r");
+    FILE* db = fopen("../../db.txt", "r");
+    read_car_instance(input, input_car);
+    search_in_base(input_car, found_car, db);
+    ASSERT_EQ(found_car->fuel_consumption, input_car->fuel_consumption);
+    ASSERT_EQ(found_car->fuel_consumption, input_car->fuel_consumption);
+    ASSERT_EQ(found_car->fuel_consumption, input_car->fuel_consumption);
+    ASSERT_STREQ(found_car->body_type, input_car->body_type);
+    ASSERT_STREQ(found_car->model_name, input_car->model_name);
+    free_car(input_car);
+    fclose(db);
+    db = fopen("../../db.txt", "r");
+    read_car_instance(input, input_car);
+    search_in_base(input_car, found_car, db);
+    ASSERT_EQ(found_car->fuel_consumption, input_car->fuel_consumption);
+    ASSERT_EQ(found_car->fuel_consumption, input_car->fuel_consumption);
+    ASSERT_EQ(found_car->fuel_consumption, input_car->fuel_consumption);
+    ASSERT_STREQ(found_car->body_type, input_car->body_type);
+    ASSERT_STREQ(found_car->model_name, input_car->model_name);
+    free_car(input_car);
+    free_car(found_car);
+    free(input_car);
+    free(found_car);
+    fclose(input);
+    fclose(db);
 }
 
 

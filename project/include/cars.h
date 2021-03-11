@@ -14,7 +14,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// define buffer size
 #define SIZE_BUF 40
+#define SCAN_FORMAT "%39s"
 
 typedef struct {
     float engine_power;
@@ -31,14 +33,15 @@ int read_car_instance(FILE* db_ptr, car *car_read);
 int print_car_instance(const car* car_print);
 float comparison(const car* car_1, const car* car_2);
 int free_car(car* car_1);
-int copy_car(car* car_destination, car* src);
+int copy_car(car* dest, car* src);
+int search_in_base(car* input_car, car* found_car, FILE* db);
 
 int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]);
 int min_of_3(int i, int i1, int i2);
 int car_nullptr(car* car_1);
 float string_distance(const char* a, const char* b);
 float distance_fl(float a, float b);
-
+int error_out(int err_code);
 
 
 #endif // PROJECT_CARS_H // NOLINT

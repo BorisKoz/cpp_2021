@@ -23,7 +23,7 @@ int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
     if (*string_in_car != NULL)
         if (strlen(*string_in_car) != 0)
             free(*string_in_car);
-    *string_in_car = (char*)malloc((strlen(buffer_value) + 1) * sizeof(char)); //NOLINT
+    *string_in_car = (char*)malloc((strlen(buffer_value) + 1) * sizeof(char));
     if (*string_in_car != NULL) {
         // was a check on <0 here, but is eliminated due to constraints:
         // SIZE_BUF always fits, and char* has no way of encoding error
@@ -38,10 +38,10 @@ int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
 int read_car_instance(FILE* db_ptr, car *car_read) {
     if (db_ptr != NULL && car_read != NULL) {
         char read_buffer[5][SIZE_BUF]= {"", "", "", "", ""};
-        if (fscanf(db_ptr, "%35s%35s%35s%35s%35s", read_buffer[0],
-                   read_buffer[1], read_buffer[2], read_buffer[3],
-                   read_buffer[4]) !=5 ) {
-            return INCORRECT_ENTRY;
+        for (int i = 0; i < 5; i++) {
+            if (fscanf(db_ptr, SCAN_FORMAT, read_buffer[i]) != 1) {
+                return INCORRECT_ENTRY;
+            }
         }
         if (strtof(read_buffer[0], NULL) > 0 && strtof(read_buffer[1], NULL) > 0
             && strtof(read_buffer[2], NULL) > 0) {
@@ -105,7 +105,7 @@ float string_distance(const char* a, const char* b) {
             matrix[x][y] = min_of_3(matrix[x - 1][y] + 1, matrix[x][y - 1] + 1,
                                     matrix[x - 1][y - 1] +
                                     (a[y - 1] == b[x - 1] ? 0 : 1));
-    return 1-((float)matrix[len_b][len_a])/len_a; //NOLINT
+    return 1-((float)matrix[len_b][len_a])/len_a;
 }
 
 // min_of_3 of 3 for levenshtein
@@ -138,11 +138,17 @@ float comparison(const car* car_1, const car* car_2) {
 int free_car(car* car_1) {
     if (car_1 != NULL) {
         if (car_1->body_type != NULL)
-            if (strlen(car_1->body_type) != 0)
+            if (strlen(car_1->body_type) != 0) {
                 free(car_1->body_type);
+                car_1->body_type = NULL;
+            }
+
         if (car_1->model_name != NULL)
-            if (strlen(car_1->model_name) != 0)
+            if (strlen(car_1->model_name) != 0) {
                 free(car_1->model_name);
+                car_1->model_name = NULL;
+            }
+
         return 0;
     }
     return NULLPTR_EX;
@@ -156,9 +162,9 @@ int copy_car(car* dest, car* src) {
     dest->fuel_consumption = src->fuel_consumption;
     dest->engine_power = src->engine_power;
     dest->maximum_velocity = src->maximum_velocity;
-    car_nullptr(dest);
-    allocate_string(&dest->model_name, src->model_name);
-    allocate_string(&dest->body_type, src->body_type);
+    if (allocate_string(&dest->model_name, src->model_name)
+    || allocate_string(&dest->body_type, src->body_type))
+        return ALLOCATE_ERROR;
     return 0;
 }
 
@@ -169,4 +175,50 @@ int car_nullptr(car* car_1) {
     return 0;
 }
 
+int error_out(int err_code) {
+    switch (err_code) {
+        case 1:
+            printf("%s", "NULL POINTER!");
+            return 1;
+        case 2:
+            printf("%s", "INCORRECT INPUT");
+            return 2;
+        case 3:
+            printf("%s", "ALLOCATION FAULT");
+            return 3;
+        case 4:
+            printf("%s", "INCORRECT OUTPUT");
+            return 4;
+    }
+    return 0;
+}
+
+int search_in_base(car* input_car, car* found_car, FILE* db) {
+    int return_code = 0;
+    car* comparison_car = (car*)malloc(sizeof(car));
+    if (comparison_car == NULL) {
+        return ALLOCATE_ERROR;
+    }
+    car_nullptr(comparison_car);
+    float max_equality;
+    while (return_code == 0) {
+        return_code = read_car_instance(db, comparison_car);
+        if (return_code <= 0) {
+            if (max_equality < comparison(input_car, comparison_car)) {
+                max_equality = comparison(input_car, comparison_car);
+                if (copy_car(found_car, comparison_car) == 0) {
+                    if (max_equality == 5) {
+                        break;
+                    }
+                } else {
+                    return_code = ALLOCATE_ERROR;
+                    break;
+                }
+            }
+        }
+    }
+    free_car(comparison_car);
+    free(comparison_car);
+    return return_code;
+}
 

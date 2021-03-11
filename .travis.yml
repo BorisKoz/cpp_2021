@@ -18,7 +18,7 @@ script:
     - cd build
     - cmake ..
     - make clean && make
-    - cppcheck ../include/*.h ../src/*.c
+    - cppcheck --inconclusive --enable=all --language=c ../include/*.h ../src/*.c
     - cpplint ../include/*.h ../src/*.c ../tests/*.cpp
     - valgrind --leak-check=full ./test.out ../db.txt ../find.txt < ../find.txt
     - cd tests
