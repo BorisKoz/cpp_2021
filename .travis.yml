@@ -20,7 +20,8 @@ script:
     - cppcheck ../include/*.h ../src/*.c
     - cpplint ../include/*.h ../src/*.c
     - valgrind --leak-check=full ./test.out ../db.txt ../find.txt
-    - ./tests/cars_tests 
+    - cd tests
+    - ./cars_tests 
 
 
 
