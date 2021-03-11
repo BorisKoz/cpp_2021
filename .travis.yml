@@ -1,4 +1,5 @@
 dist: focal
+
 language: c
 
 os: linux
@@ -21,7 +22,7 @@ script:
     - cpplint ../include/*.h ../src/*.c ../tests/*.cpp
     - valgrind --leak-check=full ./test.out ../db.txt ../find.txt < ../find.txt
     - cd tests
-    - valgrind --leak-check=full ./cars_tests 
+    - valgrind --leak-check=full --track-origins=yes ./cars_tests 
 
 
 
