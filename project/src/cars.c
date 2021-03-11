@@ -195,7 +195,7 @@ int search_in_base(car* input_car, car* found_car, FILE* db) {
         return ALLOCATE_ERROR;
     }
     car_nullptr(comparison_car);
-    float max_equality;
+    float max_equality = 0;
     while (return_code == 0) {
         return_code = read_car_instance(db, comparison_car);
         if (return_code <= 0) {

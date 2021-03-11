@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
         free(found_car);
     if (db)
         fclose(db);
-    if (search )
+    if (search)
         fclose(search);
     return return_code;
 }
