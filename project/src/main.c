@@ -13,7 +13,6 @@ int main(int argc, char *argv[]) {
     FILE* db = NULL, * search = NULL;
     int return_code = 0;
     while (true) {
-
         // Allocation fault check
         if (input_car == NULL || comparison_car == NULL || found_car == NULL) {
             return_code = ALLOCATE_ERROR;
@@ -34,12 +33,12 @@ int main(int argc, char *argv[]) {
 
         // write to file for search
         char read_buffer[SIZE_BUF];
-        for (int i=0; i<5; i++) {
-            if (scanf( "%35s", read_buffer) !=1 ) {
+        for (int i = 0; i < 5; i++) {
+            if (scanf("%35s", read_buffer) != 1 ) {
                return_code = INCORRECT_ENTRY;
             } else {
                 fputs(read_buffer, search);
-                if (i<4)
+                if (i < 4)
                     fputs(" ", search);
             }
         }
@@ -64,8 +63,6 @@ int main(int argc, char *argv[]) {
                         }
                     }
                 }
-                free_car(comparison_car);
-                car_nullptr(comparison_car);
             }
         }
         if (return_code <= 0) {

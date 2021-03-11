@@ -20,6 +20,9 @@ int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
     if (buffer_value[0] == '\0') {
         return INCORRECT_ENTRY;
     }
+    if (*string_in_car != NULL)
+        if (strlen(*string_in_car) != 0)
+            free (*string_in_car);
     *string_in_car = (char*)malloc((strlen(buffer_value) + 1) * sizeof(char)); //NOLINT
     if (*string_in_car != NULL) {
         // was a check on <0 here, but is eliminated due to constraints:
@@ -135,10 +138,10 @@ float comparison(const car* car_1, const car* car_2) {
 int free_car(car* car_1) {
     if (car_1 != NULL) {
         if (car_1->body_type != NULL)
-            if (strlen(car_1->body_type)!=0)
+            if (strlen(car_1->body_type) != 0)
                 free(car_1->body_type);
         if (car_1->model_name != NULL)
-            if (strlen(car_1->model_name)!=0)
+            if (strlen(car_1->model_name) != 0)
                 free(car_1->model_name);
         return 0;
     }

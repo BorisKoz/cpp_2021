@@ -32,6 +32,7 @@ TEST(allocate_string, ok) {
     char **allocated_string = nullptr;
     EXPECT_EQ(allocate_string(allocated_string, buffer), NULLPTR_EX);
     allocated_string = (char**) malloc(sizeof(char*)); // NOLINT
+    *allocated_string= nullptr;
     EXPECT_EQ(allocate_string(allocated_string, buffer), 0);
     free(*allocated_string);
     char buffer2[SIZE_BUF] = "";
@@ -114,6 +115,7 @@ TEST(read_car_instance, not_ok_1) {
     car car_1 = {100, 100, 0, NULL, NULL};
     open_car_database(&file, "../../tests/1.txt");
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
+    free_car(&car_1);
     fclose(file);
 }
 
@@ -124,10 +126,7 @@ TEST(read_car_instance, not_ok_2) {
     read_car_instance(file, &car_1);
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
     fclose(file);
-    open_car_database(&file, "../../tests/3.txt");
-    read_car_instance(file, &car_1);
-    ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
-    fclose(file);
+    free_car(&car_1);
 }
 
 TEST(read_car_instance, not_ok_3) {
@@ -137,6 +136,7 @@ TEST(read_car_instance, not_ok_3) {
     read_car_instance(file, &car_1);
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
     fclose(file);
+    free_car(&car_1);
 }
 
 
