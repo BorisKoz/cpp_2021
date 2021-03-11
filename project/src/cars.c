@@ -14,21 +14,27 @@ int open_car_database(FILE** db_ptr, const char* basename) {
 }
 
 int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
+    if (string_in_car == NULL) {
+        return NULLPTR_EX;
+    }
+    if (buffer_value[0] == '\0'){
+        return INCORRECT_ENTRY;
+    }
     *string_in_car = (char*)malloc((strlen(buffer_value) + 1) * sizeof(char)); //NOLINT
     if (*string_in_car != NULL) {
-        if (snprintf(*string_in_car, SIZE_BUF, "%s", buffer_value) < 0) {
-            free(*string_in_car);
-            return INCORRECT_ENTRY;
-        }
+        // was a check on <0 here, but is eliminated due to constraints:
+        // SIZE_BUF always fits, and char* has no way of encoding error
+        snprintf(*string_in_car, SIZE_BUF, "%s", buffer_value);
         return 0;
     }
+    // not reached by codecov cuz it allocs
     return ALLOCATE_ERROR;
 }
 
 // read next car instance from base.
 int read_car_instance(FILE* db_ptr, car *car_read) {
     if (db_ptr != NULL && car_read != NULL) {
-        char read_buffer[5][SIZE_BUF];
+        char read_buffer[5][SIZE_BUF]= {"","","","",""};
         if (fscanf(db_ptr, "%35s%35s%35s%35s%35s", read_buffer[0],
                    read_buffer[1], read_buffer[2], read_buffer[3],
                    read_buffer[4]) !=5 ) {
@@ -39,10 +45,13 @@ int read_car_instance(FILE* db_ptr, car *car_read) {
             car_read->engine_power = strtof(read_buffer[0], NULL);
             car_read->maximum_velocity = strtof(read_buffer[1], NULL);
             car_read->fuel_consumption = strtof(read_buffer[2], NULL);
+        } else {
+            return INCORRECT_ENTRY;
         }
 
         if (allocate_string(&car_read->model_name, read_buffer[3]) != 0
             || allocate_string(&car_read->body_type, read_buffer[4]) != 0)
+            // not reaching cuz it allocates
             return ALLOCATE_ERROR;
         if (feof(db_ptr)) {
             return EOF_REACHED;
@@ -58,12 +67,13 @@ int print_car_instance(const car* car_print) {
                 car_print->maximum_velocity, car_print->fuel_consumption,
                 car_print->model_name, car_print->body_type) > 0)
         return 0;
+    // not reached by codecov cuz it prints
     return OUTPUT_ERROR;
 }
 
 // float comparison in division. the closer they are,
 // the more return approaches 0
-float distance(float a, float b) {
+float distance_fl(float a, float b) {
     if (a > b)
         return b/a;
     else
@@ -113,9 +123,9 @@ int min_of_3(int i, int i1, int i2) {
 // comparison of 2 cars. returns 5 if completely equal
 float comparison(const car* car_1, const car* car_2) {
     float equality = 0;
-    equality += distance(car_1->maximum_velocity, car_2->maximum_velocity);
-    equality += distance(car_1->engine_power, car_2->engine_power);
-    equality += distance(car_1->fuel_consumption, car_2->fuel_consumption);
+    equality += distance_fl(car_1->maximum_velocity, car_2->maximum_velocity);
+    equality += distance_fl(car_1->engine_power, car_2->engine_power);
+    equality += distance_fl(car_1->fuel_consumption, car_2->fuel_consumption);
     equality += string_distance(car_1->model_name, car_2->model_name);
     equality += string_distance(car_1->body_type, car_2->body_type);
     return equality;
@@ -135,9 +145,9 @@ int free_car(car* car_1) {
 
 // copy existing car instance
 int copy_car(car* dest, car* src) {
-    free_car(dest);
     if (dest == NULL)
-        return ALLOCATE_ERROR;
+        return NULLPTR_EX;
+    free_car(dest);
     dest->fuel_consumption = src->fuel_consumption;
     dest->engine_power = src->engine_power;
     dest->maximum_velocity = src->maximum_velocity;

@@ -1,6 +1,4 @@
-//
-// Created by Борис Кожуро on 10.03.2021.
-//
+// Copyright 2021 <GTEST>
 
 #include "gtest/gtest.h"
 

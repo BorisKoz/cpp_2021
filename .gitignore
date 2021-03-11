@@ -1,12 +1,9 @@
-
-# CMake
 project/build/
 CMakeFiles/
 CMakeCache.txt
 cmake-build-debug/
 cmake-build-debug-coverage/
 *.cmake
-
-
 .idea/
+.DS_Store
 

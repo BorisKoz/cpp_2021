@@ -37,6 +37,7 @@ int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]);
 int min_of_3(int i, int i1, int i2);
 int car_nullptr(car* car_1);
 float string_distance(const char* a, const char* b);
+float distance_fl(float a, float b);
 
 
 #endif // PROJECT_CARS_H // NOLINT
