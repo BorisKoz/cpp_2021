@@ -11,16 +11,35 @@ execute_process(COMMAND ${CMAKE_COMMAND} --build .
 add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
         ${CMAKE_BINARY_DIR}/googletest-build)
 
+set(CMAKE_C_FLAGS "-pedantic -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "-pedantic -fprofile-arcs -ftest-coverage")
+
 enable_testing()
-add_subdirectory(tests)
+
 
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 
-file(GLOB sources
+file(GLOB prod_sources
         "${PROJECT_SOURCE_DIR}/include/*.h"
         "${PROJECT_SOURCE_DIR}/src/cars.c"
         "${PROJECT_SOURCE_DIR}/src/main.c")
 
-add_executable(test.out ${sources})
-add_executable(main.out ${sources})
+add_executable(main.out ${prod_sources})
+
+file(GLOB test_sources "${PROJECT_SOURCE_DIR}/src/*.c")
+list(REMOVE_ITEM test_sources "${PROJECT_SOURCE_DIR}/src/main.c")
+
+file(GLOB tests "${PROJECT_SOURCE_DIR}/tests/*.cpp")
+list(REMOVE_ITEM tests "${PROJECT_SOURCE_DIR}/tests/main.cpp")
+
+foreach(file ${tests})
+    set(name)
+    get_filename_component(name ${file} NAME_WE)
+    add_executable("${name}_tests"
+            ${sources}
+            ${file}
+            "${PROJECT_SOURCE_DIR}/tests/main.cpp")
+    target_link_libraries("${name}_tests" gtest_main)
+    add_test(NAME ${name} COMMAND "${name}_tests")
+endforeach()

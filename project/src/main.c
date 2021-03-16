@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
         }
 
         // write to file for search
-        char read_buffer[SIZE_BUF] = {};
+        char read_buffer[SIZE_BUF] = {""};
         for (int i = 0; i < PARAM_NUMBER; i++) {
             if (scanf(SCAN_FORMAT ,  read_buffer) != 1) {
                error_out(INCORRECT_ENTRY);
