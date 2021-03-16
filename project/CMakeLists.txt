@@ -16,8 +16,11 @@ add_subdirectory(tests)
 
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
+
 file(GLOB sources
         "${PROJECT_SOURCE_DIR}/include/*.h"
-        "${PROJECT_SOURCE_DIR}/src/*.c")
+        "${PROJECT_SOURCE_DIR}/src/cars.c"
+        "${PROJECT_SOURCE_DIR}/src/main.c")
 
 add_executable(test.out ${sources})
+add_executable(main.out ${sources})

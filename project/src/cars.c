@@ -5,32 +5,15 @@
 
 // open database file. check if not null.
 int open_car_database(FILE** db_ptr, const char* basename) {
+    if (!db_ptr) {
+        return NULLPTR_EX;
+    }
     *db_ptr = fopen(basename, "r+");
     if (*db_ptr == NULL) {
-        printf("Could not open file %s\n", basename);
+        fprintf(stderr, "Could not open file %s\n", basename);
         return NULLPTR_EX;
     }
     return 0;
-}
-
-int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]) {
-    if (!string_in_car) {
-        return NULLPTR_EX;
-    }
-    if (buffer_value[0] == '\0') {
-        return INCORRECT_ENTRY;
-    }
-    if (*string_in_car)
-        free(*string_in_car);
-    *string_in_car = (char*)malloc((strlen(buffer_value) + 1) * sizeof(char));
-    if (*string_in_car) {
-        // was a check on <0 here, but is eliminated due to constraints:
-        // SIZE_BUF always fits, and char* has no way of encoding error
-        snprintf(*string_in_car, SIZE_BUF, "%s", buffer_value);
-        return 0;
-    }
-    // not reached by codecov cuz it allocs
-    return ALLOCATE_ERROR;
 }
 
 // read next car instance from base.
@@ -42,19 +25,22 @@ int read_car_instance(FILE* db_ptr, car *car_read) {
                 return INCORRECT_ENTRY;
             }
         }
-        if (strtof(read_buffer[0], NULL) > 0 && strtof(read_buffer[1], NULL) > 0
-            && strtof(read_buffer[2], NULL) > 0) {
-            car_read->engine_power = strtof(read_buffer[0], NULL);
-            car_read->maximum_velocity = strtof(read_buffer[1], NULL);
-            car_read->fuel_consumption = strtof(read_buffer[2], NULL);
-        } else {
+        car_read->engine_power = strtof(read_buffer[0], NULL);
+        car_read->maximum_velocity = strtof(read_buffer[1], NULL);
+        car_read->fuel_consumption = strtof(read_buffer[2], NULL);
+        if (car_read->engine_power <= 0 || car_read->maximum_velocity <= 0
+            || car_read->fuel_consumption <= 0) {
             return INCORRECT_ENTRY;
         }
-
-        if (allocate_string(&car_read->model_name, read_buffer[3]) != 0
-            || allocate_string(&car_read->body_type, read_buffer[4]) != 0)
-            // not reaching cuz it allocates
+        car_read->model_name = strdup(read_buffer[3]);
+        if (!car_read->model_name) {
             return ALLOCATE_ERROR;
+        }
+        car_read->body_type = strdup(read_buffer[4]);
+        if (!car_read->body_type) {
+            free(car_read->model_name);
+            return ALLOCATE_ERROR;
+        }
         if (feof(db_ptr)) {
             return EOF_REACHED;
         }
@@ -74,26 +60,17 @@ int print_car_instance(const car* car_print) {
 }
 
 // float comparison in division. the closer they are,
-// the more return approaches 0
+// the more return approaches 1
 float distance_fl(float a, float b) {
-    if (a > b)
-        return b/a;
-    else
-        return a/b;
+    return (a > b ? b / a : a / b);
 }
 
 // levenshtein distance in c algorithm
 float string_distance(const char* a, const char* b) {
-    size_t x, y, len_a, len_b;
-    len_a = strlen(a);
-    len_b = strlen(b);
-    int matrix[len_b + 1][len_a + 1];
+    size_t x = 0, y = 0, len_a = strlen(a), len_b = strlen(b);
+    int matrix[SIZE_BUF + 1][SIZE_BUF + 1];
     // matrix initializer
-    for (x = 0; x <= len_b; x++) {
-        for (y = 0; y <= len_a; y++) {
-            matrix[x][y] = 0;
-        }
-    }
+    memset(matrix, 0, sizeof(matrix));
     matrix[0][0] = 0;
     for (x = 1; x <= len_b; x++)
         matrix[x][0] = matrix[x-1][0]+1;
@@ -108,18 +85,11 @@ float string_distance(const char* a, const char* b) {
 }
 
 // min_of_3 of 3 for levenshtein
+int min(int a, int b) {
+    return (a < b ? a : b);
+}
 int min_of_3(int i, int i1, int i2) {
-    if (i < i1) {
-        if (i < i2) {
-            return i;
-        } else {
-            return i2;
-        }
-    }
-    if (i2 < i1) {
-        return i2;
-    }
-    return i1;
+    return min(i, min(i1, i2));
 }
 
 // comparison of 2 cars. returns 5 if completely equal
@@ -151,68 +121,71 @@ int free_car(car* car_1) {
 
 // copy existing car instance
 int copy_car(car* dest, car* src) {
-    if (dest == NULL)
+    if (!dest || !src) {
         return NULLPTR_EX;
+    }
     free_car(dest);
     dest->fuel_consumption = src->fuel_consumption;
     dest->engine_power = src->engine_power;
     dest->maximum_velocity = src->maximum_velocity;
-    if (allocate_string(&dest->model_name, src->model_name)
-    || allocate_string(&dest->body_type, src->body_type))
+    dest->model_name = strdup(src->model_name);
+    if (!dest->model_name) {
         return ALLOCATE_ERROR;
+    }
+    dest->body_type = strdup(src->body_type);
+    if (!dest->body_type) {
+        free(dest->model_name);
+        return ALLOCATE_ERROR;
+    }
     return 0;
 }
 
-
-int car_nullptr(car* car_1) {
-    car_1->body_type = NULL;
-    car_1->model_name = NULL;
-    return 0;
-}
 
 int error_out(int err_code) {
     switch (err_code) {
         case 1:
-            printf("%s", "NULL POINTER!");
+            fprintf(stderr, "%s", "NULL POINTER!");
             return 1;
         case 2:
-            printf("%s", "INCORRECT INPUT");
+            fprintf(stderr, "%s", "INCORRECT INPUT");
             return 2;
         case 3:
-            printf("%s", "ALLOCATION FAULT");
+            fprintf(stderr, "%s", "ALLOCATION FAULT");
             return 3;
         case 4:
-            printf("%s", "INCORRECT OUTPUT");
+            fprintf(stderr, "%s", "INCORRECT OUTPUT");
             return 4;
+        default:
+            return 0;
     }
-    return 0;
 }
 
 int search_in_base(car* input_car, car* found_car, FILE* db) {
     int return_code = 0;
-    car* comparison_car = (car*)malloc(sizeof(car));
+    car* comparison_car = (car*)calloc(1, sizeof(car));
     if (comparison_car == NULL) {
         return ALLOCATE_ERROR;
     }
-    car_nullptr(comparison_car);
     float max_equality = 0;
     while (return_code == 0) {
         return_code = read_car_instance(db, comparison_car);
-        if (return_code <= 0) {
-            if (max_equality < comparison(input_car, comparison_car)) {
-                max_equality = comparison(input_car, comparison_car);
-                if (copy_car(found_car, comparison_car) == 0) {
-                    if (max_equality == 5) {
-                        break;
-                    }
-                } else {
-                    return_code = ALLOCATE_ERROR;
-                    break;
-                }
+        if (return_code > 0) {
+            return ALLOCATE_ERROR;
+        }
+        float current_equality = comparison(input_car, comparison_car);
+        if (max_equality < current_equality) {
+            max_equality = current_equality;
+            if (copy_car(found_car, comparison_car) != 0) {
+                return_code = ALLOCATE_ERROR;
+                free_car(comparison_car);
+                break;
             }
         }
+        if (max_equality == 5) {
+            break;
+        }
+        free_car(comparison_car);
     }
-    free_car(comparison_car);
     free(comparison_car);
     return return_code;
 }

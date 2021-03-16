@@ -1,5 +1,8 @@
 // Copyright 2021 <BKZ>
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #ifndef PROJECT_CARS_H // NOLINT
 #define PROJECT_CARS_H // NOLINT
 
@@ -9,10 +12,8 @@
 #define ALLOCATE_ERROR 3
 #define OUTPUT_ERROR 4
 // define finish read signal
-#define EOF_REACHED -1
-
-#include <stdio.h>
-#include <stdlib.h>
+#define EOF_REACHED (-1)
+#define PARAM_NUMBER 5
 
 // define buffer size
 #define SIZE_BUF 40
@@ -36,9 +37,7 @@ int free_car(car* car_1);
 int copy_car(car* dest, car* src);
 int search_in_base(car* input_car, car* found_car, FILE* db);
 
-int allocate_string(char** string_in_car, const char buffer_value[SIZE_BUF]);
 int min_of_3(int i, int i1, int i2);
-int car_nullptr(car* car_1);
 float string_distance(const char* a, const char* b);
 float distance_fl(float a, float b);
 int error_out(int err_code);

@@ -1,10 +1,12 @@
 // Copyright 2021 <BKZ>
-
 #include "gtest/gtest.h"
 
 extern "C" {
 #include "./cars.h"
 }
+
+#define TEST_TXT "./test.txt"
+#define TEST_DB_TXT "./test_db.txt"
 
 // tests for in-program logic
 TEST(min, ok) {
@@ -27,44 +29,28 @@ TEST(distance, ok) {
 
 
 // tests for memory functions
-TEST(allocate_string, ok) {
-    char buffer[SIZE_BUF] = "test_string";
-    char **allocated_string = nullptr;
-    EXPECT_EQ(allocate_string(allocated_string, buffer), NULLPTR_EX);
-    allocated_string = (char**) malloc(sizeof(char*));
-    *allocated_string = nullptr;
-    EXPECT_EQ(allocate_string(allocated_string, buffer), 0);
-    free(*allocated_string);
-    char buffer2[SIZE_BUF] = "";
-    EXPECT_EQ(allocate_string(allocated_string, buffer2), INCORRECT_ENTRY);
-    free(allocated_string);
-}
 
 TEST(open_car_database, ok) {
     FILE* pointer;
-    EXPECT_EQ(open_car_database(&pointer, "../../db.txt"), 0);
+    pointer = fopen(TEST_TXT, "a");
+    fclose(pointer);
+    EXPECT_EQ(open_car_database(&pointer, TEST_TXT), 0);
     fclose(pointer);
     EXPECT_EQ(open_car_database(&pointer, "search.txt"), NULLPTR_EX);
+    remove(TEST_TXT);
 }
 
 TEST(free_car, ok) {
     car* pointer = NULL;
     car car_a = {100, 100, 1, NULL, NULL};
     char buffer[SIZE_BUF] = "test_string";
-    allocate_string(&car_a.body_type, buffer);
-    allocate_string(&car_a.model_name, buffer);
+    car_a.body_type = strdup(buffer);
+    car_a.model_name = strdup(buffer);
     EXPECT_EQ(free_car(pointer), NULLPTR_EX);
     EXPECT_EQ(free_car(&car_a), 0);
 }
 
 
-
-// as car_nullptr is only called on need of null allocation
-// or on already nulled strings it has no memleak
-TEST(car_nullptr, ok) {
-    car car_a = {100, 100, 1, nullptr, nullptr};
-    EXPECT_EQ(car_nullptr(&car_a), 0);
-}
 
 TEST(copy_car, not_ok) {
     car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"};
@@ -101,22 +87,31 @@ TEST(print_car_instance, ok) {
 }
 
 TEST(read_car_instance, ok) {
-    FILE* file = nullptr;
+    FILE* file = fopen(TEST_TXT, "a");
+    fputs("150 200 2 Renault_Logan Jeeps", file);
+    fclose(file);
+    file = nullptr;
     car car_1 = {100, 100, 0, NULL, NULL};
     ASSERT_EQ(read_car_instance(file, &car_1), NULLPTR_EX);
-    open_car_database(&file, "../../tests/5.txt");
+    open_car_database(&file, TEST_TXT);
     ASSERT_EQ(read_car_instance(file, &car_1), EOF_REACHED);
     fclose(file);
-    open_car_database(&file, "../../db.txt");
+    file = fopen(TEST_TXT, "a");
+    fputs("150 200 2 Renault_Logan Jeeps", file);
+    fclose(file);
+    open_car_database(&file, TEST_TXT);
     ASSERT_EQ(read_car_instance(file, &car_1), 0);
     fclose(file);
     free_car(&car_1);
+    remove(TEST_TXT);
 }
 
 TEST(read_car_instance, not_ok_1) {
-    FILE* file = nullptr;
+    FILE* file = fopen(TEST_TXT, "a");
+    fputs("1 10 a Toyota Sedan", file);
+    fclose(file);
     car car_1 = {100, 100, 0, NULL, NULL};
-    open_car_database(&file, "../../tests/1.txt");
+    open_car_database(&file, TEST_TXT);
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
     free_car(&car_1);
     fclose(file);
@@ -124,9 +119,12 @@ TEST(read_car_instance, not_ok_1) {
 }
 
 TEST(read_car_instance, not_ok_2) {
-    FILE* file = nullptr;
+    FILE* file = fopen(TEST_TXT, "a");
+    fputs("1 10 1 Toyota Sedan\n"
+          "1 10 a Toyota", file);
+    fclose(file);
     car car_1 = {100, 100, 0, NULL, NULL};
-    open_car_database(&file, "../../tests/2.txt");
+    open_car_database(&file, TEST_TXT);
     read_car_instance(file, &car_1);
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
     fclose(file);
@@ -134,9 +132,12 @@ TEST(read_car_instance, not_ok_2) {
 }
 
 TEST(read_car_instance, not_ok_3) {
-    FILE* file = nullptr;
+    FILE* file = fopen(TEST_TXT, "a");
+    fputs("1 10 1 Toyota\n"
+          "1 10 1 Toyota Sedan", file);
+    fclose(file);
     car car_1 = {100, 100, 0, NULL, NULL};
-    open_car_database(&file, "../../tests/3.txt");
+    open_car_database(&file, TEST_TXT);
     read_car_instance(file, &car_1);
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
     fclose(file);
@@ -152,12 +153,20 @@ TEST(errprint, ok) {
 }
 
 TEST(search_test, ok) {
-    car* input_car = (car*)malloc(sizeof(car));
-    car* found_car = (car*)malloc(sizeof(car));
-    car_nullptr(input_car);
-    car_nullptr(found_car);
-    FILE* input = fopen("../../tests/4.txt", "r");
-    FILE* db = fopen("../../db.txt", "r");
+    FILE* input = fopen(TEST_TXT, "a");
+    fputs("100 200 2 Renault_Logan Jeep\n"
+          "150 200 2 Renault_Logan Jeep", input);
+    fclose(input);
+    FILE* db = fopen(TEST_TXT, "a");
+    fputs("1150 200 2 Renault_Logan Jeep\n"
+          "100 100 2 Toyota_Camry Sedan\n"
+          "100 100 1 Toyota_Camry Sedan\n"
+          "100 120 2 Renault_Sanderas Sedan", db);
+    fclose(db);
+    car* input_car = (car*)calloc(1, sizeof(car));
+    car* found_car = (car*)calloc(1, sizeof(car));
+    input = fopen("../../tests/4.txt", "r");
+    db = fopen("../../db.txt", "r");
     read_car_instance(input, input_car);
     search_in_base(input_car, found_car, db);
     ASSERT_EQ(found_car->fuel_consumption, input_car->fuel_consumption);
