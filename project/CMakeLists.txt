@@ -37,7 +37,7 @@ foreach(file ${tests})
     set(name)
     get_filename_component(name ${file} NAME_WE)
     add_executable("${name}_tests"
-            ${sources}
+            ${test_sources}
             ${file}
             "${PROJECT_SOURCE_DIR}/tests/main.cpp")
     target_link_libraries("${name}_tests" gtest_main)
