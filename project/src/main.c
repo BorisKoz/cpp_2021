@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     }
     FILE* db = NULL, * search = NULL;
     int return_code = 0;
-    while(true) {
+    while (true) {
         // open fault check
         if (open_car_database(&db, argv[1]) != 0 ||
             open_car_database(&search, argv[2]) != 0) {

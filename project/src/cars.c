@@ -32,6 +32,7 @@ int read_car_instance(FILE* db_ptr, car *car_read) {
             || car_read->fuel_consumption <= 0) {
             return INCORRECT_ENTRY;
         }
+        free_car(car_read);
         car_read->model_name = strdup(read_buffer[3]);
         if (!car_read->model_name) {
             return ALLOCATE_ERROR;
@@ -181,10 +182,10 @@ int search_in_base(car* input_car, car* found_car, FILE* db) {
                 break;
             }
         }
+        free_car(comparison_car);
         if (max_equality == 5) {
             break;
         }
-        free_car(comparison_car);
     }
     free(comparison_car);
     return return_code;
