@@ -3,6 +3,7 @@
 
 extern "C" {
 #include "./cars.h"
+#include "./cars_logic.h"
 }
 
 #define TEST_TXT "./test.txt"
@@ -116,6 +117,7 @@ TEST(read_car_instance, not_ok_1) {
     free_car(&car_1);
     fclose(file);
     free_car(&car_1);
+    remove(TEST_TXT);
 }
 
 TEST(read_car_instance, not_ok_2) {
@@ -129,6 +131,7 @@ TEST(read_car_instance, not_ok_2) {
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
     fclose(file);
     free_car(&car_1);
+    remove(TEST_TXT);
 }
 
 TEST(read_car_instance, not_ok_3) {
@@ -142,6 +145,7 @@ TEST(read_car_instance, not_ok_3) {
     ASSERT_EQ(read_car_instance(file, &car_1), INCORRECT_ENTRY);
     fclose(file);
     free_car(&car_1);
+    remove(TEST_TXT);
 }
 
 TEST(errprint, ok) {
@@ -157,16 +161,16 @@ TEST(search_test, ok) {
     fputs("100 200 2 Renault_Logan Jeep\n"
           "150 200 2 Renault_Logan Jeep", input);
     fclose(input);
-    FILE* db = fopen(TEST_TXT, "a");
-    fputs("1150 200 2 Renault_Logan Jeep\n"
+    FILE* db = fopen(TEST_DB_TXT, "a");
+    fputs("150 200 2 Renault_Logan Jeep\n"
           "100 100 2 Toyota_Camry Sedan\n"
           "100 100 1 Toyota_Camry Sedan\n"
           "100 120 2 Renault_Sanderas Sedan", db);
     fclose(db);
     car* input_car = (car*)calloc(1, sizeof(car));
     car* found_car = (car*)calloc(1, sizeof(car));
-    input = fopen("../../tests/4.txt", "r");
-    db = fopen("../../db.txt", "r");
+    input = fopen(TEST_TXT, "r");
+    db = fopen(TEST_DB_TXT, "r");
     read_car_instance(input, input_car);
     search_in_base(input_car, found_car, db);
     ASSERT_EQ(found_car->fuel_consumption, input_car->fuel_consumption);
@@ -176,7 +180,7 @@ TEST(search_test, ok) {
     ASSERT_STREQ(found_car->model_name, input_car->model_name);
     free_car(input_car);
     fclose(db);
-    db = fopen("../../db.txt", "r");
+    db = fopen(TEST_DB_TXT, "r");
     read_car_instance(input, input_car);
     search_in_base(input_car, found_car, db);
     ASSERT_EQ(found_car->fuel_consumption, input_car->fuel_consumption);
@@ -190,6 +194,8 @@ TEST(search_test, ok) {
     free(found_car);
     fclose(input);
     fclose(db);
+    remove(TEST_TXT);
+    remove(TEST_DB_TXT);
 }
 
 

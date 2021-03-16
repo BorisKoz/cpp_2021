@@ -1,6 +1,7 @@
 // Copyright 2021 <BKZ>
 
 #include "../include/cars.h"
+#include "../include/cars_logic.h"
 #include <string.h>
 
 // open database file. check if not null.
@@ -145,16 +146,16 @@ int copy_car(car* dest, car* src) {
 int error_out(int err_code) {
     switch (err_code) {
         case 1:
-            fprintf(stderr, "%s", "NULL POINTER!");
+            fprintf(stderr, "%s", "NULL POINTER!\n");
             return 1;
         case 2:
-            fprintf(stderr, "%s", "INCORRECT INPUT");
+            fprintf(stderr, "%s", "INCORRECT INPUT\n");
             return 2;
         case 3:
-            fprintf(stderr, "%s", "ALLOCATION FAULT");
+            fprintf(stderr, "%s", "ALLOCATION FAULT\n");
             return 3;
         case 4:
-            fprintf(stderr, "%s", "INCORRECT OUTPUT");
+            fprintf(stderr, "%s", "INCORRECT OUTPUT\n");
             return 4;
         default:
             return 0;

@@ -36,11 +36,8 @@ float comparison(const car* car_1, const car* car_2);
 int free_car(car* car_1);
 int copy_car(car* dest, car* src);
 int search_in_base(car* input_car, car* found_car, FILE* db);
-
-int min_of_3(int i, int i1, int i2);
-float string_distance(const char* a, const char* b);
-float distance_fl(float a, float b);
 int error_out(int err_code);
+
 
 
 #endif // PROJECT_CARS_H // NOLINT
