@@ -2,15 +2,15 @@
 #include "gtest/gtest.h"
 
 extern "C" {
-#include "./cars.h"
-#include "./cars_logic.h"
+#include "cars.h"
+#include "cars_logic.h"
 }
 
 #define TEST_TXT "./test.txt"
 #define TEST_DB_TXT "./test_db.txt"
 
 // tests for in-program logic
-TEST(min, ok) {
+TEST(min_of_3, correct_minimum) {
     ASSERT_EQ(min_of_3(1, 2, 3), 1);
     ASSERT_EQ(min_of_3(1, 3, 2), 1);
     ASSERT_EQ(min_of_3(2, 1, 3), 1);
@@ -18,12 +18,13 @@ TEST(min, ok) {
     ASSERT_EQ(min_of_3(2, 3, 1), 1);
     ASSERT_EQ(min_of_3(3, 2, 1), 1);
 }
-TEST(Levenstein, ok) {
+TEST(string_distance, correct_levenstein_distance) {
     EXPECT_EQ(string_distance("Toyota", "Toyota"), 1);
     EXPECT_EQ(string_distance("Toyota", "Toy"), 0.5);
     EXPECT_EQ(string_distance("Toyota", "Renaul"), 0);
+    EXPECT_EQ(string_distance("Toyota", nullptr), 0);
 }
-TEST(distance, ok) {
+TEST(distance_fl, correct_division) {
     EXPECT_EQ(distance_fl(1, 2), 0.5);
     EXPECT_EQ(distance_fl(4, 1), 0.25);
 }
@@ -31,7 +32,7 @@ TEST(distance, ok) {
 
 // tests for memory functions
 
-TEST(open_car_database, ok) {
+TEST(open_car_database, db_is_opened_correctly) {
     FILE* pointer;
     pointer = fopen(TEST_TXT, "a");
     fclose(pointer);
@@ -41,7 +42,7 @@ TEST(open_car_database, ok) {
     remove(TEST_TXT);
 }
 
-TEST(free_car, ok) {
+TEST(free_car, memory_is_freed_correctly) {
     car* pointer = NULL;
     car car_a = {100, 100, 1, NULL, NULL};
     char buffer[SIZE_BUF] = "test_string";
@@ -53,13 +54,13 @@ TEST(free_car, ok) {
 
 
 
-TEST(copy_car, not_ok) {
+TEST(copy_car, stop_copy_if_null) {
     car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"};
     car* newcar = nullptr;
     EXPECT_EQ(copy_car(newcar, &car_a), NULLPTR_EX);
 }
 
-TEST(copy_car, ok) {
+TEST(copy_car, copy_is_correct) {
     car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"};
     car newcar = {200, 0, 2, nullptr, nullptr};
     EXPECT_EQ(copy_car(&newcar, &car_a), 0);
@@ -71,7 +72,7 @@ TEST(copy_car, ok) {
     free_car(&newcar);
 }
 
-TEST(comparison, ok) {
+TEST(comparison, comparison_is_correct) {
     car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"};
     car car_b = {100, 0, 1, (char*)"Toyota", (char*)"Sedan"};
     car car_c = {100, 0, 0, (char*)"Toyota", (char*)"Sedan"};
@@ -82,12 +83,12 @@ TEST(comparison, ok) {
     EXPECT_EQ(comparison(&car_a, &car_d), 0);
 }
 
-TEST(print_car_instance, ok) {
+TEST(print_car_instance, prints_a_car) {
     car car_a = {100, 100, 1, (char*)"Toyota", (char*)"Sedan"};
     ASSERT_EQ(print_car_instance(&car_a), 0);
 }
 
-TEST(read_car_instance, ok) {
+TEST(read_car_instance, reads_correctly) {
     FILE* file = fopen(TEST_TXT, "a");
     fputs("150 200 2 Renault_Logan Jeeps", file);
     fclose(file);
@@ -107,7 +108,7 @@ TEST(read_car_instance, ok) {
     remove(TEST_TXT);
 }
 
-TEST(read_car_instance, not_ok_1) {
+TEST(read_car_instance, incorrect_solo_entry) {
     FILE* file = fopen(TEST_TXT, "a");
     fputs("1 10 a Toyota Sedan", file);
     fclose(file);
@@ -120,7 +121,7 @@ TEST(read_car_instance, not_ok_1) {
     remove(TEST_TXT);
 }
 
-TEST(read_car_instance, not_ok_2) {
+TEST(read_car_instance, incorrect_multiple_entry) {
     FILE* file = fopen(TEST_TXT, "a");
     fputs("1 10 1 Toyota Sedan\n"
           "1 10 a Toyota", file);
@@ -134,7 +135,7 @@ TEST(read_car_instance, not_ok_2) {
     remove(TEST_TXT);
 }
 
-TEST(read_car_instance, not_ok_3) {
+TEST(read_car_instance, incorrect_multiple_entry_2) {
     FILE* file = fopen(TEST_TXT, "a");
     fputs("1 10 1 Toyota\n"
           "1 10 1 Toyota Sedan", file);
@@ -148,7 +149,7 @@ TEST(read_car_instance, not_ok_3) {
     remove(TEST_TXT);
 }
 
-TEST(errprint, ok) {
+TEST(errprint, prints_errors) {
     ASSERT_EQ(error_out(1), 1);
     ASSERT_EQ(error_out(2), 2);
     ASSERT_EQ(error_out(3), 3);
@@ -156,7 +157,7 @@ TEST(errprint, ok) {
     ASSERT_EQ(error_out(-1), 0);
 }
 
-TEST(search_test, ok) {
+TEST(search_test, searches_for_cars) {
     FILE* input = fopen(TEST_TXT, "a");
     fputs("100 200 2 Renault_Logan Jeep\n"
           "150 200 2 Renault_Logan Jeep", input);

@@ -1,7 +1,7 @@
 // Copyright 2021 <BKZ>
 
-#include "../include/cars.h"
-#include "../include/cars_logic.h"
+#include "cars.h"
+#include "cars_logic.h"
 #include <string.h>
 
 // open database file. check if not null.
@@ -20,25 +20,25 @@ int open_car_database(FILE** db_ptr, const char* basename) {
 // read next car instance from base.
 int read_car_instance(FILE* db_ptr, car *car_read) {
     if (db_ptr != NULL && car_read != NULL) {
-        char read_buffer[5][SIZE_BUF]= {"", "", "", "", ""};
-        for (int i = 0; i < 5; i++) {
+        char read_buffer[PARAM_NUMBER][SIZE_BUF]= {"", "", "", "", ""};
+        for (int i = 0; i < PARAM_NUMBER; i++) {
             if (fscanf(db_ptr, SCAN_FORMAT, read_buffer[i]) != 1) {
                 return INCORRECT_ENTRY;
             }
         }
-        car_read->engine_power = strtof(read_buffer[0], NULL);
-        car_read->maximum_velocity = strtof(read_buffer[1], NULL);
-        car_read->fuel_consumption = strtof(read_buffer[2], NULL);
+        car_read->engine_power = strtof(read_buffer[ENGINE_POW], NULL);
+        car_read->maximum_velocity = strtof(read_buffer[MAX_V], NULL);
+        car_read->fuel_consumption = strtof(read_buffer[FUEL], NULL);
         if (car_read->engine_power <= 0 || car_read->maximum_velocity <= 0
             || car_read->fuel_consumption <= 0) {
             return INCORRECT_ENTRY;
         }
         free_car(car_read);
-        car_read->model_name = strdup(read_buffer[3]);
+        car_read->model_name = strdup(read_buffer[MODEL_NAME]);
         if (!car_read->model_name) {
             return ALLOCATE_ERROR;
         }
-        car_read->body_type = strdup(read_buffer[4]);
+        car_read->body_type = strdup(read_buffer[BODY_TYPE]);
         if (!car_read->body_type) {
             free(car_read->model_name);
             return ALLOCATE_ERROR;
@@ -69,6 +69,9 @@ float distance_fl(float a, float b) {
 
 // levenshtein distance in c algorithm
 float string_distance(const char* a, const char* b) {
+    if (!a || !b) {
+        return 0;
+    }
     size_t x = 0, y = 0, len_a = strlen(a), len_b = strlen(b);
     int matrix[SIZE_BUF + 1][SIZE_BUF + 1];
     // matrix initializer
@@ -145,18 +148,18 @@ int copy_car(car* dest, car* src) {
 
 int error_out(int err_code) {
     switch (err_code) {
-        case 1:
+        case NULLPTR_EX:
             fprintf(stderr, "%s", "NULL POINTER!\n");
-            return 1;
-        case 2:
+            return NULLPTR_EX;
+        case INCORRECT_ENTRY:
             fprintf(stderr, "%s", "INCORRECT INPUT\n");
-            return 2;
-        case 3:
+            return INCORRECT_ENTRY;
+        case ALLOCATE_ERROR:
             fprintf(stderr, "%s", "ALLOCATION FAULT\n");
-            return 3;
-        case 4:
+            return ALLOCATE_ERROR;
+        case OUTPUT_ERROR:
             fprintf(stderr, "%s", "INCORRECT OUTPUT\n");
-            return 4;
+            return OUTPUT_ERROR;
         default:
             return 0;
     }
@@ -184,7 +187,7 @@ int search_in_base(car* input_car, car* found_car, FILE* db) {
             }
         }
         free_car(comparison_car);
-        if (max_equality == 5) {
+        if (max_equality == PARAM_NUMBER) {
             break;
         }
     }

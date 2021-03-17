@@ -1,8 +1,7 @@
 // Copyright 2021 <BKZ>
 #include <stdio.h>
 #include <stdbool.h>
-#include "../include/cars.h"
-
+#include "cars.h"
 
 
 int main(int argc, char *argv[]) {

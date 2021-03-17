@@ -11,7 +11,7 @@
 #define INCORRECT_ENTRY 2
 #define ALLOCATE_ERROR 3
 #define OUTPUT_ERROR 4
-// define finish read signal
+// define logic
 #define EOF_REACHED (-1)
 #define PARAM_NUMBER 5
 
@@ -19,12 +19,19 @@
 #define SIZE_BUF 40
 #define SCAN_FORMAT "%39s"
 
+// define parameter indexes in array
+#define ENGINE_POW 0
+#define MAX_V 1
+#define FUEL 2
+#define MODEL_NAME 3
+#define BODY_TYPE 4
+
 typedef struct {
     float engine_power;
     float maximum_velocity;
     float fuel_consumption;
-    char* body_type;
     char* model_name;
+    char* body_type;
 } car;
 
 
