@@ -1,5 +1,6 @@
 // Copyright 2021 bkz
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include "../include/search.h"
 #include <sys/stat.h>
