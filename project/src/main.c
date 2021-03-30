@@ -8,8 +8,8 @@
 #include "../include/search.h"
 
 int main() {
-    // LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom |
-    // fold -w 100 | head -n 100000 > bigfile.txt
+    system("LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom |"
+           " fold -w 100 | head -n 100000 > bigfile.txt");
     FILE* p = fopen("bigfile.txt", "r");
     char* array = (char*) calloc(3, sizeof(char));
     size_t* found = (size_t*) calloc(3, sizeof(size_t));
@@ -32,9 +32,9 @@ int main() {
         printf("%zu ", found[i]);
     }
     printf("\n%lf", elapsed);
-    fclose(p);
-
-
+    if (p) {
+        fclose(p);
+    }
     free(array);
     free(found);
 

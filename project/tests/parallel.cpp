@@ -13,6 +13,8 @@ TEST(file_search_parallel, null_params) {
     ASSERT_EQ(file_search(nullptr, c1, found, stf), NULL_ENTRY);
     ASSERT_EQ(file_search(&f1, nullptr, found, stf), NULL_ENTRY);
     ASSERT_EQ(file_search(&f1, c1, nullptr, stf), NULL_ENTRY);
+    free(c1);
+    free(found);
 }
 
 
@@ -22,6 +24,8 @@ TEST(file_search_parallel, empty_file) {
     size_t* found = (size_t*)calloc(10, sizeof (size_t));
     size_t stf = 0;
     ASSERT_EQ(file_search(&f1, c1, found, stf), NULL_ENTRY);
+    free(c1);
+    free(found);
 }
 
 TEST(file_search_parallel, premade_file) {
@@ -54,13 +58,11 @@ TEST(file_search_parallel, grep_random) {
     remove("grep_results.txt");
     system("grep -o 'a' 1.txt | wc -l >> grep_results.txt");
     system("grep -o 'b' 1.txt | wc -l >> grep_results.txt");
-    system("grep -o '\n' 1.txt | wc -l >> grep_results.txt");
     remove("1.txt");
     f1 = fopen("grep_results.txt", "r");
-    int i1, i2, i3;
-    fscanf(f1, "%d %d %d", &i1, &i2, &i3);
+    int i1, i2;
+    fscanf(f1, "%d %d", &i1, &i2);
     fclose(f1);
     ASSERT_EQ(found[0], i1);
     ASSERT_EQ(found[1], i2);
-    ASSERT_EQ(found[2], i3);
 }
