@@ -1,0 +1,32 @@
+
+dist: focal
+
+language: c
+
+os: linux
+
+compiler: gcc
+
+install:
+    - sudo apt-get install valgrind
+    - sudo apt-get install clang
+    - sudo apt-get install cppcheck
+    - sudo pip install cpplint
+
+script:
+    - cd project/
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make clean && make
+    - cppcheck --inconclusive --enable=all --language=c ../include/*.h ../src/*.c
+    - cpplint ../include/*.h ../src/*.c ../tests/*.cpp
+    - valgrind --leak-check=full --track-origins=yes ./main_linear.out
+    - valgrind --leak-check=full --track-origins=yes ./main_parallel.out
+    - valgrind --leak-check=full --track-origins=yes ./linear_tests
+    - valgrind --leak-check=full --track-origins=yes ./parallel_tests
+
+
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
