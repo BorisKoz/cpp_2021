@@ -124,6 +124,8 @@ int file_search(FILE** fp, const char* to_find,
         close(pipes[current_id][0]);
         close(pipes[current_id][1]);
         free_all_resources(divisions, processes);
+        free(end_sig);
+        fclose(*fp);
         exit(0);
     }
 
