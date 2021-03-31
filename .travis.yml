@@ -26,6 +26,10 @@ script:
     - echo "2 ab" | valgrind --leak-check=full --track-origins=yes -s  --show-leak-kinds=all ./main_parallel.out bigfile.txt
     - valgrind --leak-check=full --track-origins=yes ./linear_tests
     - valgrind --leak-check=full --track-origins=yes ./parallel_tests
+    - echo "these are clean times, no valgrind"
+    - echo "2 ab" | ./main_linear.out bigfile.txt
+    - echo "2 ab" | ./main_parallel.out bigfile.txt
+
 
 
 
