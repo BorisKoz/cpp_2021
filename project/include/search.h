@@ -9,7 +9,7 @@
 #define WRONG_OPEN 4
 #define MAX_PROCESS 6
 #define READ_SIZE 20
-#define BUFFER_SIZE 25
+#define BUFFER_SIZE 30
 #define FORMAT_STRING "%020d"
 
 int file_search(FILE** , const char* , size_t* , size_t size_to_find);

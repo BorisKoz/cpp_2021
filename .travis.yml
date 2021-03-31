@@ -21,8 +21,9 @@ script:
     - make clean && make
     - cppcheck --inconclusive --enable=all --language=c ../include/*.h ../src/*.c
     - cpplint ../include/*.h ../src/*.c ../tests/*.cpp
-    - valgrind --leak-check=full --track-origins=yes ./main_linear.out
-    - valgrind --leak-check=full --track-origins=yes ./main_parallel.out
+    - LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom |fold -w 100 | head -n 100000 > bigfile.txt
+    - echo "2 ab" | valgrind --leak-check=full --track-origins=yes ./main_linear.out bigfile.txt
+    - echo "2 ab" | valgrind --leak-check=full --track-origins=yes ./main_parallel.out bigfile.txt
     - valgrind --leak-check=full --track-origins=yes ./linear_tests
     - valgrind --leak-check=full --track-origins=yes ./parallel_tests
 

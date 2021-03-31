@@ -1,42 +1,60 @@
 // Copyright 2021 bkz
 
 #include <stdio.h>
-
+#include <string.h>
 #include <time.h>
 #include <sys/time.h>
 #include <stdlib.h>
 #include "../include/search.h"
+#define TEST_SERIES_SIZE 3
+#define RESULTS_FILE "res.txt"
 
-int main() {
-    system("LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom |"
-           " fold -w 100 | head -n 100000 > bigfile.txt");
-    FILE* p = fopen("bigfile.txt", "r");
-    char* array = (char*) calloc(3, sizeof(char));
-    size_t* found = (size_t*) calloc(3, sizeof(size_t));
-    array[0] = 'a';
-    array[1] = 'b';
-    array[2] = '\n';
-    struct timespec start, finish;
-    double elapsed;
-
-    clock_gettime(CLOCK_MONOTONIC, &start);
-
-    file_search(&p, array, found, 3);
-
-    clock_gettime(CLOCK_MONOTONIC, &finish);
-
-    elapsed = (double)(finish.tv_sec - start.tv_sec);
-    elapsed += (double)(finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-
-    for (int i=0; i < 3; i++) {
-        printf("%zu ", found[i]);
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "No file input");
+        return -1;
     }
-    printf("\n%lf", elapsed);
+    // открытие файла
+    FILE* p = fopen(argv[1], "r");
+    if (!p) {
+        fprintf(stderr, "No such file");
+        return -1;
+    }
+
+    // считывание символов
+    int size_to_find = 0;
+    char to_find [BUFFER_SIZE] = "";
+    size_t found[BUFFER_SIZE] = {0};
+    memset(found, 0, BUFFER_SIZE);
+    scanf("%d", &size_to_find);
+    if (size_to_find > 30) {
+        fprintf(stderr, "Too much symbols");
+        return -1;
+    }
+    scanf("%c", &to_find[0]);
+    for (int i = 0; i < size_to_find; i++) {
+        scanf("%c", &to_find[i]);
+    }
+
+    //работа с файлом
+    double elapsed[TEST_SERIES_SIZE], average =0;
+    for (int i = 0; i < TEST_SERIES_SIZE; i++) {
+        struct timespec start, finish;
+
+        clock_gettime(CLOCK_MONOTONIC, &start);
+
+        file_search(&p, to_find, found, size_to_find);
+
+        clock_gettime(CLOCK_MONOTONIC, &finish);
+        elapsed[i] = (double)(finish.tv_sec - start.tv_sec);
+        elapsed[i] += (double)(finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+        printf("elapsed: %lf\n", elapsed[i]);
+        average += elapsed[i];
+    }
+    average = average / TEST_SERIES_SIZE;
+    printf("Series average: %lf\n", average);
     if (p) {
         fclose(p);
     }
-    free(array);
-    free(found);
-
     return 0;
 }
