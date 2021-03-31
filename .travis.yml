@@ -26,7 +26,8 @@ script:
     - echo "2 ab" | valgrind --leak-check=full --track-origins=yes -s  --show-leak-kinds=all ./main_parallel.out bigfile.txt
     - valgrind --leak-check=full --track-origins=yes ./linear_tests
     - valgrind --leak-check=full --track-origins=yes ./parallel_tests
-    - echo "these are clean times, no valgrind"
+    - LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom |fold -w 100 | head -n 1000000 > bigfile2.txt
+    - echo "these are clean times, no valgrind, on 100MB"
     - echo "2 ab" | ./main_linear.out bigfile.txt
     - echo "2 ab" | ./main_parallel.out bigfile.txt
 
