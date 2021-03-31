@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/BorisKoz/cpp_2021.svg?branch=HW-2)](https://travis-ci.com/BorisKoz/cpp_2021)
 
-
+[![codecov](https://codecov.io/gh/BorisKoz/cpp_2021/branch/HW-2/graph/badge.svg)](https://codecov.io/gh/BorisKoz/cpp_2021)
 
 
 # Вариант #4
