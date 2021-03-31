@@ -25,10 +25,11 @@ int main(int argc, char* argv[]) {
     int size_to_find = 0;
     char to_find [BUFFER_SIZE] = "";
     size_t found[BUFFER_SIZE] = {0};
-    memset(found, 0, BUFFER_SIZE);
+    memset(found, 0, BUFFER_SIZE * sizeof(*found));
     scanf("%d", &size_to_find);
     if (size_to_find > 30) {
         fprintf(stderr, "Too much symbols");
+        fclose(p);
         return -1;
     }
     scanf("%c", &to_find[0]);
@@ -38,6 +39,7 @@ int main(int argc, char* argv[]) {
 
     //работа с файлом
     double elapsed[TEST_SERIES_SIZE], average =0;
+    memset(found, 0, TEST_SERIES_SIZE * sizeof(*elapsed));
     for (int i = 0; i < TEST_SERIES_SIZE; i++) {
         struct timespec start, finish;
 
