@@ -67,6 +67,7 @@ int fork_calculations(int* processes, int process_count) {
 
 int file_search(FILE** fp, const char* to_find,
                          size_t* found, size_t size_to_find) {
+    // correct checks
     if (fp == NULL || *fp == NULL || to_find == NULL || found == NULL) {
         return NULL_ENTRY;
     }
