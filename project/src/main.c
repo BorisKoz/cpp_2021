@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
 
     // считывание символов
     int size_to_find = 0;
-    char to_find [BUFFER_SIZE] = "";
+    char to_find[BUFFER_SIZE] = "";
     size_t found[BUFFER_SIZE] = {0};
     memset(found, 0, BUFFER_SIZE * sizeof(*found));
     scanf("%d", &size_to_find);
@@ -37,8 +37,8 @@ int main(int argc, char* argv[]) {
         scanf("%c", &to_find[i]);
     }
 
-    //работа с файлом
-    double elapsed[TEST_SERIES_SIZE], average =0;
+    // работа с файлом
+    double elapsed[TEST_SERIES_SIZE], average = 0;
     memset(found, 0, TEST_SERIES_SIZE * sizeof(*elapsed));
     for (int i = 0; i < TEST_SERIES_SIZE; i++) {
         struct timespec start, finish;
