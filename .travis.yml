@@ -1,0 +1,36 @@
+
+dist: focal
+
+language: c
+
+os: linux
+
+compiler: gcc
+
+install:
+    - sudo apt-get install valgrind
+    - sudo apt-get install clang
+    - sudo apt-get install cppcheck
+    - sudo pip install cpplint
+
+script:
+    - cd project/
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make clean && make
+    - cppcheck --inconclusive --enable=all --language=c ../include/*.h ../src/*.c
+    - cpplint ../include/*.h ../src/*.c ../tests/*.cpp
+    - LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom |fold -w 100 | head -n 100000 > bigfile.txt
+    - echo "2 ab" | valgrind --leak-check=full --track-origins=yes -s ./main.out bigfile.txt
+    - valgrind --leak-check=full --track-origins=yes  ./linear_tests
+    - valgrind --leak-check=full --track-origins=yes  ./parallel_tests
+    - LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom |fold -w 100 | head -n 1000000 > bigfile2.txt
+    - echo "these are clean times, no valgrind, on 100MB"
+    - echo "2 ab" | ./main.out bigfile2.txt
+
+
+
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
