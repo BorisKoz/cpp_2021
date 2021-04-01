@@ -6,9 +6,9 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <stdlib.h>
-#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
+#define unlikely(expr) __builtin_expect(!!(expr), 0)
 
 void free_all_resources(size_t* divisions, int* processes ) {
     if (divisions) {
@@ -32,10 +32,12 @@ int calculate_process(size_t filesize) {
     if (filesize < 1000000) {
         return 4;
     }
-    return MAX_PROCESS;
+    return (MAX_PROCESS > (int)sysconf(_SC_NPROCESSORS_ONLN) ?
+            (int)sysconf(_SC_NPROCESSORS_ONLN) : MAX_PROCESS);
 }
 
-int create_division(int count, size_t filesize, size_t *divisions) {
+int create_division(
+        int count, size_t filesize, size_t *divisions) {
     size_t proc_range = filesize/count;
 
     if (divisions == NULL) {
@@ -63,6 +65,25 @@ int fork_calculations(int* processes, int process_count) {
         processes[i] = current_id;
     }
     return getpid();
+}
+
+int child_process_run(const char* file_in_memory, const size_t* divisions,
+                       const int current_id, const int size_to_find,
+                       const char* to_find, int pipes[MAX_PROCESS][2]) {
+    for (int j = 0; j < size_to_find; j++) {
+        int count = 0;
+        for (size_t i = divisions[current_id];
+             i < divisions[current_id+1]; i++) {
+            if (unlikely(file_in_memory[i] == to_find[j]))
+                count++;
+        }
+        char str[BUFFER_SIZE] = "0";
+        snprintf(str, READ_SIZE + 1, FORMAT_STRING, count);
+        write(pipes[current_id][1], str, strlen(str));
+    }
+    close(pipes[current_id][0]);
+    close(pipes[current_id][1]);
+    return 0;
 }
 
 int file_search(FILE** fp, const char* to_find,
@@ -93,9 +114,6 @@ int file_search(FILE** fp, const char* to_find,
     size_t* divisions = (size_t *)calloc(process_count + 1, sizeof(size_t));
     create_division(process_count, file_stat.st_size, divisions);
 
-    pthread_mutex_t mutex_write_lock;
-    pthread_mutex_init(&mutex_write_lock, NULL);
-
     // setup pipe comms
     int* processes = (int *)calloc(process_count, sizeof(pid_t));
     int pipes[MAX_PROCESS][2];
@@ -108,39 +126,23 @@ int file_search(FILE** fp, const char* to_find,
 
     // this is child process block
     if (getpid() != current_id) {
-        write(pipes[current_id][1], "0", 1);
-        for (int j = 0; j < size_to_find; j++) {
-            int count = 0;
-            for (size_t i = divisions[current_id];
-                i < divisions[current_id+1]; i++) {
-                if (file_in_memory[i] == to_find[j])
-                    count++;
-            }
-            char str[BUFFER_SIZE] = "0";
-            snprintf(str, READ_SIZE + 1, FORMAT_STRING, count);
-            write(pipes[current_id][1], str, strlen(str));
-        }
-        char* end_sig = malloc(sizeof(char));
-        read(pipes[current_id][0], end_sig, sizeof(char));
-        close(pipes[current_id][0]);
-        close(pipes[current_id][1]);
+        child_process_run(file_in_memory, divisions, current_id,
+                          size_to_find, to_find, pipes);
         free_all_resources(divisions, processes);
-        free(end_sig);
         fclose(*fp);
         exit(0);
     }
 
     // this is parent process block
     for (int i = 0; i < process_count; i++) {
-        waitpid(processes[i], NULL, 0);
+        while (!waitpid(processes[i], NULL, 0)) {
+        }
         for (int j = 0; j < size_to_find; j++) {
             char str[BUFFER_SIZE] = "0";
             read(pipes[i][0], str, READ_SIZE);
             int count = (int)strtol(str, NULL, 10);
             found[j]+= count;
         }
-        char buf = 'e';
-        write(pipes[i][1], &buf, sizeof(char));
         close(pipes[i][0]);
         close(pipes[i][1]);
     }

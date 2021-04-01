@@ -39,9 +39,9 @@ TEST(file_search, premade_file) {
     file_search(&f1, c1, found, stf);
     fclose(f1);
     remove("1.txt");
-    ASSERT_EQ(found[0], 4);
-    ASSERT_EQ(found[1], 2);
-    ASSERT_EQ(found[2], 3);
+    EXPECT_EQ(found[0], 4);
+    EXPECT_EQ(found[1], 2);
+    EXPECT_EQ(found[2], 3);
 }
 
 TEST(file_search, grep_random) {
@@ -63,6 +63,6 @@ TEST(file_search, grep_random) {
     int i1, i2;
     fscanf(f1, "%d %d", &i1, &i2);
     fclose(f1);
-    ASSERT_EQ(found[0], i1);
-    ASSERT_EQ(found[1], i2);
+    EXPECT_EQ(found[0], i1);
+    EXPECT_EQ(found[1], i2);
 }

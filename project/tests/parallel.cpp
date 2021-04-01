@@ -6,6 +6,7 @@ extern "C" {
 }
 
 TEST(file_search_parallel, null_params) {
+    remove("1.txt");
     FILE* f1 = fopen("1.txt", "a");
     char* c1 = (char*)calloc(10, sizeof (char));
     size_t* found = (size_t*)calloc(10, sizeof (size_t));
@@ -19,6 +20,7 @@ TEST(file_search_parallel, null_params) {
 
 
 TEST(file_search_parallel, empty_file) {
+    remove("1.txt");
     FILE* f1 = fopen("1.txt", "a");
     char* c1 = (char*)calloc(10, sizeof (char));
     size_t* found = (size_t*)calloc(10, sizeof (size_t));
@@ -29,6 +31,7 @@ TEST(file_search_parallel, empty_file) {
 }
 
 TEST(file_search_parallel, premade_file) {
+    remove("1.txt");
     FILE* f1 = fopen("1.txt", "a");
     fputs("a a a a\n b\n b\n", f1);
     char c1[3] = {'a', 'b', '\n'};
@@ -39,12 +42,13 @@ TEST(file_search_parallel, premade_file) {
     file_search(&f1, c1, found, stf);
     fclose(f1);
     remove("1.txt");
-    ASSERT_EQ(found[0], 4);
-    ASSERT_EQ(found[1], 2);
-    ASSERT_EQ(found[2], 3);
+    EXPECT_EQ(found[0], 4);
+    EXPECT_EQ(found[1], 2);
+    EXPECT_EQ(found[2], 3);
 }
 
 TEST(file_search_parallel, grep_random) {
+    remove("1.txt");
     FILE* f1 = fopen("1.txt", "a");
     char c1[3] = {'a', 'b', '\n'};
     size_t found[3] = {0, 0, 0};
@@ -63,6 +67,6 @@ TEST(file_search_parallel, grep_random) {
     int i1, i2;
     fscanf(f1, "%d %d", &i1, &i2);
     fclose(f1);
-    ASSERT_EQ(found[0], i1);
-    ASSERT_EQ(found[1], i2);
+    EXPECT_EQ(found[0], i1);
+    EXPECT_EQ(found[1], i2);
 }

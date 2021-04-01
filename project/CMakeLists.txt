@@ -20,8 +20,6 @@ enable_testing()
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 
-
-
 set(INCLUDE ${PROJECT_SOURCE_DIR}/include)
 set(SOURCE ${PROJECT_SOURCE_DIR}/src)
 
@@ -36,10 +34,8 @@ file(GLOB prod_sources
         "${PROJECT_SOURCE_DIR}/include/*.h"
         "${PROJECT_SOURCE_DIR}/src/main.c")
 
-add_executable(main_linear.out ${PROJECT_SOURCE_DIR}/src/main.c)
-add_executable(main_parallel.out ${PROJECT_SOURCE_DIR}/src/main.c)
-target_link_libraries(main_linear.out bigfile_linear)
-target_link_libraries(main_parallel.out bigfile_parallel)
+add_executable(main.out ${PROJECT_SOURCE_DIR}/src/main.c)
+target_link_libraries(main.out -ldl bigfile_linear)
 
 
 file(GLOB tests "${PROJECT_SOURCE_DIR}/tests/*.cpp")

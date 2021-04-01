@@ -7,7 +7,7 @@
 #define MMAP_ERR 2
 #define PID_ERR 3
 #define WRONG_OPEN 4
-#define MAX_PROCESS 6
+#define MAX_PROCESS 10
 #define READ_SIZE 20
 #define BUFFER_SIZE 30
 #define FORMAT_STRING "%020d"
