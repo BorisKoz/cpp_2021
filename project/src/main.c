@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 
     // parallel run
     p = fopen(argv[1], "r");
-    void *parallel_lib = dlopen("./libbigfile_parallel.dylib", RTLD_LAZY);
+    void *parallel_lib = dlopen("libbigfile_parallel.dylib", RTLD_LAZY);
     if (!parallel_lib) {
         fprintf(stderr, "LIBRARY NOT FOUND");
         return -1;
