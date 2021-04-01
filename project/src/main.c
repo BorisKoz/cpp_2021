@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 
     // parallel run
     p = fopen(argv[1], "r");
-    void *parallel_lib = dlopen("libbigfile_parallel.dylib", RTLD_LAZY);
+    void *parallel_lib = dlopen("libbigfile_parallel.so", RTLD_LAZY);
     if (!parallel_lib) {
         fprintf(stderr, "LIBRARY NOT FOUND");
         return -1;
@@ -86,9 +86,6 @@ int main(int argc, char* argv[]) {
         elapsed[i] += (double)(finish.tv_nsec - start.tv_nsec) / 1000000000.0;
         printf("elapsed: %lf\n", elapsed[i]);
         average_parallel += elapsed[i];
-        for (int j = 0; j < 2; j++) {
-            printf("found %d : %zu \n", j , found[j]);
-        }
         memset(found, 0, BUFFER_SIZE * sizeof(*found));
     }
     average_parallel = average_parallel / TEST_SERIES_SIZE;

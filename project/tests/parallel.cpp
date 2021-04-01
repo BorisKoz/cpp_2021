@@ -60,8 +60,8 @@ TEST(file_search_parallel, grep_random) {
     file_search(&f1, c1, found, stf);
     fclose(f1);
     remove("grep_results.txt");
-    system("grep -o 'a' 1.txt | wc -l >> grep_results.txt");
-    system("grep -o 'b' 1.txt | wc -l >> grep_results.txt");
+    system("grep -o 'a' 4.txt | wc -l >> grep_results.txt");
+    system("grep -o 'b' 4.txt | wc -l >> grep_results.txt");
     remove("4.txt");
     f1 = fopen("grep_results.txt", "r");
     int i1, i2;

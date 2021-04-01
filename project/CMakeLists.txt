@@ -26,7 +26,8 @@ set(SOURCE ${PROJECT_SOURCE_DIR}/src)
 add_library(bigfile_linear STATIC
         ${INCLUDE}/search.h
         ${SOURCE}/linear.c)
-add_library(bigfile_parallel SHARED
+# changed to MODULE, otherwise is built different local-remote
+add_library(bigfile_parallel MODULE
         ${INCLUDE}/search.h
         ${SOURCE}/parallel.c)
 
