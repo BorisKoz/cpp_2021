@@ -90,11 +90,10 @@ int main(int argc, char* argv[]) {
     }
     average_parallel = average_parallel / TEST_SERIES_SIZE;
     printf("Parallel series average: %lf\n", average_parallel);
+    average > average_parallel ?
+     printf("parallel is faster : %lf vs %lf", average_parallel, average) :
+     printf("linear is faster : %lf vs %lf", average, average_parallel);
     dlclose(parallel_lib);
-
-    (average > average_parallel ?
-    printf("parallel is faster : %lf vs %lf", average_parallel, average) :
-    printf("linear is faster : %lf vs %lf", average, average_parallel));
 
     if (p) {
         fclose(p);
