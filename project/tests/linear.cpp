@@ -15,6 +15,7 @@ TEST(file_search, null_params) {
     ASSERT_EQ(file_search(&f1, c1, nullptr, stf), NULL_ENTRY);
     free(c1);
     free(found);
+    fclose(f1);
 }
 
 
@@ -26,6 +27,7 @@ TEST(file_search, empty_file) {
     ASSERT_EQ(file_search(&f1, c1, found, stf), NULL_ENTRY);
     free(c1);
     free(found);
+    fclose(f1);
 }
 
 TEST(file_search, premade_file) {
